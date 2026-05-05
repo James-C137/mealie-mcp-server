@@ -3,8 +3,11 @@ import os
 import traceback
 
 from dotenv import load_dotenv
+from mcp.server.auth.settings import AuthSettings
 from mcp.server.fastmcp import FastMCP
+from pydantic import AnyHttpUrl
 
+from auth import WorkOSTokenVerifier
 from mealie import MealieFetcher
 from prompts import register_prompts
 from tools import register_all_tools
@@ -24,18 +27,33 @@ logging.basicConfig(
 )
 logger = logging.getLogger("mealie-mcp")
 
-mcp = FastMCP(
-    "mealie",
-    host=os.getenv("HOST", "0.0.0.0"),
-    port=int(os.getenv("PORT", "8000")),
-)
-
 MEALIE_BASE_URL = os.getenv("MEALIE_BASE_URL")
 MEALIE_API_KEY = os.getenv("MEALIE_API_KEY")
+WORKOS_ISSUER = os.getenv("WORKOS_ISSUER")
+MCP_RESOURCE_URL = os.getenv("MCP_RESOURCE_URL")
 if not MEALIE_BASE_URL or not MEALIE_API_KEY:
     raise ValueError(
         "MEALIE_BASE_URL and MEALIE_API_KEY must be set in environment variables."
     )
+if not WORKOS_ISSUER or not MCP_RESOURCE_URL:
+    raise ValueError(
+        "WORKOS_ISSUER and MCP_RESOURCE_URL must be set in environment variables."
+    )
+
+mcp = FastMCP(
+    "mealie",
+    host=os.getenv("HOST", "0.0.0.0"),
+    port=int(os.getenv("PORT", "8000")),
+    token_verifier=WorkOSTokenVerifier(
+        issuer=WORKOS_ISSUER,
+        resource=MCP_RESOURCE_URL,
+    ),
+    auth=AuthSettings(
+        issuer_url=AnyHttpUrl(WORKOS_ISSUER),
+        resource_server_url=AnyHttpUrl(MCP_RESOURCE_URL),
+        required_scopes=[],
+    ),
+)
 
 try:
     mealie = MealieFetcher(
