@@ -1,6 +1,19 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class RecipeOrganizer(BaseModel):
+    """Base shape for the objects Mealie returns inside a recipe's
+    ``recipeCategory``, ``tags``, and ``tools`` arrays. ``RecipeTool`` carries
+    an extra ``householdsWithTool`` field; allowing extras lets us round-trip
+    it (and any future fields) without losing data on update."""
+
+    model_config = ConfigDict(extra="allow")
+
+    id: Optional[str] = None
+    name: str
+    slug: str
 
 
 class IngredientUnit(BaseModel):
@@ -93,9 +106,9 @@ class Recipe(BaseModel):
     cookTime: Optional[int] = None
     performTime: Optional[int] = None
     description: Optional[str] = None
-    recipeCategory: List[str] = Field(default_factory=list)
-    tags: List[str] = Field(default_factory=list)
-    tools: List[str] = Field(default_factory=list)
+    recipeCategory: List[RecipeOrganizer] = Field(default_factory=list)
+    tags: List[RecipeOrganizer] = Field(default_factory=list)
+    tools: List[RecipeOrganizer] = Field(default_factory=list)
     rating: Optional[float] = None
     orgURL: Optional[str] = None
     dateAdded: str
