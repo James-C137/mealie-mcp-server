@@ -117,13 +117,16 @@ Restart Claude Desktop to load the server.
 
 ## 🎯 Available Tools
 
-### Recipe Tools (13 operations)
+### Recipe Tools (15 operations)
 - `get_recipes` - List/search recipes with advanced filtering
 - `get_recipe_detailed` - Get complete recipe details
 - `get_recipe_concise` - Get recipe summary
 - `create_recipe` - Create new recipe
 - `update_recipe` - Update recipe (full replacement)
 - `patch_recipe` - Update specific fields only
+- `set_recipe_tags` - Replace recipe tags by slug
+- `set_recipe_categories` - Replace recipe categories by slug
+- `set_recipe_equipment` - Replace recipe equipment by slug
 - `duplicate_recipe` - Clone a recipe
 - `mark_recipe_last_made` - Update last made timestamp
 - `set_recipe_image_from_url` - Set image from URL
@@ -165,13 +168,17 @@ Restart Claude Desktop to load the server.
 - `update_tag` - Update tag
 - `delete_tag` - Delete tag
 
+### Equipment Tools (2 operations)
+- `get_equipment` - List/search equipment (Mealie "tools")
+- `get_equipment_by_slug` - Get equipment by slug
+
 ### Meal Plan Tools (4 operations)
 - `get_all_mealplans` - List meal plans
 - `create_mealplan` - Create meal plan entry
 - `create_mealplan_bulk` - Create multiple entries
 - `get_todays_mealplan` - Get today's meals
 
-**Total: 45 tools** providing comprehensive Mealie API coverage
+**Total: 49 tools** providing comprehensive Mealie API coverage
 
 ## 🔧 Development
 

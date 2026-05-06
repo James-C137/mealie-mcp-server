@@ -10,8 +10,13 @@ This document compares the MCP server implementation against the official Mealie
 | Shopping Lists | 17 | 14 | 82% |
 | Categories | 7 | 7 | 100% ✅ |
 | Tags | 7 | 7 | 100% ✅ |
+| Equipment (Tools) | 7 | 2 | 29% |
 | Meal Plans | 7 | 4 | 57% |
-| **Total Priority APIs** | **58** | **45** | **78%** |
+| **Total Priority APIs** | **65** | **47** | **72%** |
+
+> Note: Recipe tag/category/equipment assignment is exposed via three additional
+> MCP tools (`set_recipe_tags`, `set_recipe_categories`, `set_recipe_equipment`)
+> that wrap the existing `PATCH /api/recipes/{slug}` endpoint.
 
 ## Detailed Coverage
 
@@ -88,6 +93,19 @@ This document compares the MCP server implementation against the official Mealie
 - ✅ `PUT /api/organizers/tags/{id}` - Update
 - ✅ `DELETE /api/organizers/tags/{id}` - Delete
 
+### 🔶 Equipment / Tools (2/7 implemented)
+
+Mealie calls these "tools"; the MCP server exposes them as "equipment" to
+avoid overloading the MCP "tool" terminology.
+
+- ✅ `GET /api/organizers/tools` - List all
+- ✅ `GET /api/organizers/tools/slug/{slug}` - Get by slug
+- ⏳ `GET /api/organizers/tools/empty` - Get empty
+- ⏳ `POST /api/organizers/tools` - Create
+- ⏳ `GET /api/organizers/tools/{id}` - Get by ID
+- ⏳ `PUT /api/organizers/tools/{id}` - Update
+- ⏳ `DELETE /api/organizers/tools/{id}` - Delete
+
 ### 🔶 Meal Plans (4/7 implemented)
 
 **Implemented:**
@@ -119,7 +137,6 @@ The following API areas are available but not yet implemented:
 - Recipe actions (`/api/households/recipe-actions/*`)
 
 ### Organizer Features
-- Tools (`/api/organizers/tools/*`)
 - Foods (`/api/organizers/foods/*`)
 - Units (`/api/organizers/units/*`)
 - Labels (`/api/organizers/labels/*`)
@@ -174,7 +191,7 @@ According to the OpenAPI specification (`openapi.json`):
 
 **MCP Server Coverage:**
 - **Paths Covered:** ~50
-- **Operations Implemented:** 45 tools
+- **Operations Implemented:** 49 tools
 - **Tags Covered:** 8 major categories
 
 ## Notes
@@ -193,7 +210,7 @@ According to the OpenAPI specification (`openapi.json`):
 
 ## Testing Coverage
 
-All 45 implemented tools have been tested end-to-end with Claude Desktop:
+All 49 implemented tools have been tested end-to-end with Claude Desktop:
 - ✅ CRUD operations verified
 - ✅ Bulk operations tested
 - ✅ Edge cases handled (empty responses, null values, field preservation)
