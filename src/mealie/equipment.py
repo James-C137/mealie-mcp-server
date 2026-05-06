@@ -65,3 +65,57 @@ class EquipmentMixin:
         return self._handle_request(
             "GET", f"/api/organizers/tools/slug/{equipment_slug}"
         )
+
+    def create_equipment(self, name: str) -> Dict[str, Any]:
+        """Create a new equipment item.
+
+        Args:
+            name: Name of the equipment (e.g. "cast iron skillet")
+
+        Returns:
+            JSON response containing the created equipment
+        """
+        if not name:
+            raise ValueError("Equipment name cannot be empty")
+
+        payload = {"name": name}
+
+        logger.info({"message": "Creating equipment", "name": name})
+        return self._handle_request("POST", "/api/organizers/tools", json=payload)
+
+    def update_equipment(
+        self, equipment_id: str, equipment_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Update a specific equipment item.
+
+        Args:
+            equipment_id: The UUID of the equipment to update
+            equipment_data: Dictionary containing the equipment properties to update
+
+        Returns:
+            JSON response containing the updated equipment
+        """
+        if not equipment_id:
+            raise ValueError("Equipment ID cannot be empty")
+        if not equipment_data:
+            raise ValueError("Equipment data cannot be empty")
+
+        logger.info({"message": "Updating equipment", "equipment_id": equipment_id})
+        return self._handle_request(
+            "PUT", f"/api/organizers/tools/{equipment_id}", json=equipment_data
+        )
+
+    def delete_equipment(self, equipment_id: str) -> Dict[str, Any]:
+        """Delete a specific equipment item.
+
+        Args:
+            equipment_id: The UUID of the equipment to delete
+
+        Returns:
+            JSON response confirming deletion
+        """
+        if not equipment_id:
+            raise ValueError("Equipment ID cannot be empty")
+
+        logger.info({"message": "Deleting equipment", "equipment_id": equipment_id})
+        return self._handle_request("DELETE", f"/api/organizers/tools/{equipment_id}")

@@ -61,6 +61,16 @@ base.
 - `get_equipment` - List/search equipment items (Mealie's `/api/organizers/tools`, exposed as "equipment")
 - `get_equipment_by_slug` - Look up equipment by slug
 
+#### Equipment CRUD (3 new operations)
+- `create_equipment` - Create a new equipment item, so agents can attach
+  equipment to a recipe even when the slug doesn't yet exist (previously
+  `set_recipe_equipment` required the item to already be in Mealie)
+- `update_equipment` - Rename an equipment item
+- `delete_equipment` - Delete an equipment item
+
+Mealie's equipment schema only accepts `name` (no plural form, description,
+or label, unlike foods).
+
 ### 🔄 Backwards Compatibility
 
 The `ingredients` argument to `create_recipe` / `update_recipe` is now

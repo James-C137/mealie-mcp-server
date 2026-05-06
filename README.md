@@ -168,9 +168,12 @@ Restart Claude Desktop to load the server.
 - `update_tag` - Update tag
 - `delete_tag` - Delete tag
 
-### Equipment Tools (2 operations)
+### Equipment Tools (5 operations)
 - `get_equipment` - List/search equipment (Mealie "tools")
 - `get_equipment_by_slug` - Get equipment by slug
+- `create_equipment` - Create new equipment
+- `update_equipment` - Rename equipment
+- `delete_equipment` - Delete equipment
 
 ### Meal Plan Tools (4 operations)
 - `get_all_mealplans` - List meal plans

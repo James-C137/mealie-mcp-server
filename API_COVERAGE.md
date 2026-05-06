@@ -95,7 +95,7 @@ This document compares the MCP server implementation against the official Mealie
 - ✅ `PUT /api/organizers/tags/{id}` - Update
 - ✅ `DELETE /api/organizers/tags/{id}` - Delete
 
-### 🔶 Equipment / Tools (2/7 implemented)
+### 🔶 Equipment / Tools (5/7 implemented)
 
 Mealie calls these "tools"; the MCP server exposes them as "equipment" to
 avoid overloading the MCP "tool" terminology.
@@ -103,10 +103,10 @@ avoid overloading the MCP "tool" terminology.
 - ✅ `GET /api/organizers/tools` - List all
 - ✅ `GET /api/organizers/tools/slug/{slug}` - Get by slug
 - ⏳ `GET /api/organizers/tools/empty` - Get empty
-- ⏳ `POST /api/organizers/tools` - Create
+- ✅ `POST /api/organizers/tools` - Create
 - ⏳ `GET /api/organizers/tools/{id}` - Get by ID
-- ⏳ `PUT /api/organizers/tools/{id}` - Update
-- ⏳ `DELETE /api/organizers/tools/{id}` - Delete
+- ✅ `PUT /api/organizers/tools/{id}` - Update
+- ✅ `DELETE /api/organizers/tools/{id}` - Delete
 
 ### ✅ Foods (5/5 implemented - 100%)
 
@@ -214,7 +214,7 @@ According to the OpenAPI specification (`openapi.json`):
 
 **MCP Server Coverage:**
 - **Paths Covered:** ~50
-- **Operations Implemented:** 49 tools
+- **Operations Implemented:** 52 tools
 - **Tags Covered:** 8 major categories
 
 ## Notes
@@ -233,7 +233,7 @@ According to the OpenAPI specification (`openapi.json`):
 
 ## Testing Coverage
 
-All 49 implemented tools have been tested end-to-end with Claude Desktop:
+All 52 implemented tools have been tested end-to-end with Claude Desktop:
 - ✅ CRUD operations verified
 - ✅ Bulk operations tested
 - ✅ Edge cases handled (empty responses, null values, field preservation)
