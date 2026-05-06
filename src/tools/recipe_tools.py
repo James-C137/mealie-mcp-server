@@ -364,6 +364,122 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
             raise ToolError(error_msg)
 
     @mcp.tool()
+    def set_recipe_tags(slug: str, tag_slugs: List[str]) -> Dict[str, Any]:
+        """Replace the tags on a recipe with the provided list of tag slugs.
+
+        This replaces the recipe's existing tags entirely. To add to or remove
+        from the current set, fetch the recipe with `get_recipe_detailed` first
+        and merge slugs before calling. Pass an empty list to clear all tags.
+
+        IMPORTANT: tag_slugs must be tag SLUGS (e.g., "quick-meals"), not display
+        names. Use `get_tags` or `get_tag_by_slug` to discover available slugs.
+        Tags must already exist; use `create_tag` to add new ones first.
+
+        Args:
+            slug: The unique text identifier for the recipe to update.
+            tag_slugs: List of tag slugs to set on the recipe. Pass [] to clear.
+
+        Returns:
+            Dict[str, Any]: The updated recipe details.
+        """
+        try:
+            logger.info(
+                {"message": "Setting recipe tags", "slug": slug, "tag_slugs": tag_slugs}
+            )
+            tags = [
+                {"id": tag["id"], "name": tag["name"], "slug": tag["slug"]}
+                for tag in (mealie.get_tag_by_slug(s) for s in tag_slugs)
+            ]
+            return mealie.patch_recipe(slug, {"tags": tags})
+        except Exception as e:
+            error_msg = f"Error setting recipe tags '{slug}': {str(e)}"
+            logger.error({"message": error_msg})
+            logger.debug({"message": "Error traceback", "traceback": traceback.format_exc()})
+            raise ToolError(error_msg)
+
+    @mcp.tool()
+    def set_recipe_categories(
+        slug: str, category_slugs: List[str]
+    ) -> Dict[str, Any]:
+        """Replace the categories on a recipe with the provided list of slugs.
+
+        This replaces the recipe's existing categories entirely. To add to or
+        remove from the current set, fetch the recipe with `get_recipe_detailed`
+        first and merge slugs before calling. Pass an empty list to clear.
+
+        IMPORTANT: category_slugs must be category SLUGS (e.g., "main-dish"),
+        not display names. Use `get_categories` or `get_category_by_slug` to
+        discover available slugs. Categories must already exist; use
+        `create_category` to add new ones first.
+
+        Args:
+            slug: The unique text identifier for the recipe to update.
+            category_slugs: List of category slugs to set on the recipe. Pass [] to clear.
+
+        Returns:
+            Dict[str, Any]: The updated recipe details.
+        """
+        try:
+            logger.info(
+                {
+                    "message": "Setting recipe categories",
+                    "slug": slug,
+                    "category_slugs": category_slugs,
+                }
+            )
+            categories = [
+                {"id": cat["id"], "name": cat["name"], "slug": cat["slug"]}
+                for cat in (mealie.get_category_by_slug(s) for s in category_slugs)
+            ]
+            return mealie.patch_recipe(slug, {"recipeCategory": categories})
+        except Exception as e:
+            error_msg = f"Error setting recipe categories '{slug}': {str(e)}"
+            logger.error({"message": error_msg})
+            logger.debug({"message": "Error traceback", "traceback": traceback.format_exc()})
+            raise ToolError(error_msg)
+
+    @mcp.tool()
+    def set_recipe_equipment(
+        slug: str, equipment_slugs: List[str]
+    ) -> Dict[str, Any]:
+        """Replace the equipment on a recipe with the provided list of slugs.
+
+        Equipment corresponds to Mealie's "tools" organizer (e.g., "stand-mixer",
+        "instant-pot"). This replaces the recipe's existing equipment entirely.
+        To add to or remove from the current set, fetch the recipe with
+        `get_recipe_detailed` first and merge slugs before calling. Pass an
+        empty list to clear all equipment.
+
+        IMPORTANT: equipment_slugs must be equipment SLUGS, not display names.
+        Use `get_equipment` or `get_equipment_by_slug` to discover available slugs.
+
+        Args:
+            slug: The unique text identifier for the recipe to update.
+            equipment_slugs: List of equipment slugs to set on the recipe. Pass [] to clear.
+
+        Returns:
+            Dict[str, Any]: The updated recipe details.
+        """
+        try:
+            logger.info(
+                {
+                    "message": "Setting recipe equipment",
+                    "slug": slug,
+                    "equipment_slugs": equipment_slugs,
+                }
+            )
+            tools = [
+                {"id": eq["id"], "name": eq["name"], "slug": eq["slug"]}
+                for eq in (mealie.get_equipment_by_slug(s) for s in equipment_slugs)
+            ]
+            return mealie.patch_recipe(slug, {"tools": tools})
+        except Exception as e:
+            error_msg = f"Error setting recipe equipment '{slug}': {str(e)}"
+            logger.error({"message": error_msg})
+            logger.debug({"message": "Error traceback", "traceback": traceback.format_exc()})
+            raise ToolError(error_msg)
+
+    @mcp.tool()
     def delete_recipe(slug: str) -> Dict[str, Any]:
         """Delete a recipe permanently.
 

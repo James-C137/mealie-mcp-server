@@ -2,6 +2,19 @@
 
 All notable changes to the Mealie MCP Server.
 
+## [Unreleased]
+
+### ✨ New Features
+
+#### Recipe Tag/Category/Equipment Assignment (3 new operations)
+- `set_recipe_tags` - Replace a recipe's tags with a list of tag slugs
+- `set_recipe_categories` - Replace a recipe's categories with a list of category slugs
+- `set_recipe_equipment` - Replace a recipe's equipment ("tools") with a list of equipment slugs
+
+#### Equipment Discovery (2 new operations)
+- `get_equipment` - List/search equipment items (Mealie's `/api/organizers/tools`, exposed as "equipment")
+- `get_equipment_by_slug` - Look up equipment by slug
+
 ## [Unreleased] - 2025-01-05
 
 ### 🎉 Major Feature Additions
