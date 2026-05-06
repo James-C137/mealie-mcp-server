@@ -6,7 +6,8 @@ from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
 
 from mealie import MealieFetcher
-from models.recipe import Recipe, RecipeIngredient, RecipeInstruction
+from models.recipe import Recipe, RecipeInstruction
+from tools._ingredients import build_recipe_ingredients
 
 logger = logging.getLogger("mealie-mcp")
 
@@ -138,13 +139,33 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
 
     @mcp.tool()
     def create_recipe(
-        name: str, ingredients: List[str], instructions: List[str]
+        name: str, ingredients: List[Any], instructions: List[str]
     ) -> Dict[str, Any]:
-        """Create a new recipe
+        """Create a new recipe.
+
+        Ingredients accept two forms (mix freely within the same list):
+
+        1. Plain string (legacy, free-form): `"1 lb ground pork"` — stored
+           verbatim in `note`. Use this for vague items like
+           `"salt to taste"` that don't fit a structured schema.
+
+        2. Structured dict for items the recipe scaler should multiply:
+
+               {"quantity": 1.0, "unit": "lb", "food": "ground pork"}
+               {"quantity": 25, "unit": "g", "food": "seasoning mix",
+                "note": "or to taste"}
+
+           `unit` and `food` accept either a name (matched
+           case-insensitively against existing names, plural names,
+           abbreviations, and aliases) or an existing UUID. Names that do
+           not match any existing record cause this call to fail with a
+           list of unknowns. Use `create_food` / `create_unit` to add them
+           first, then retry — this is intentional to prevent silent
+           duplication of the food/unit vocabulary.
 
         Args:
             name: The name of the new recipe to be created.
-            ingredients: A list of ingredients for the recipe include quantities and units.
+            ingredients: List of strings and/or structured ingredient dicts.
             instructions: A list of instructions for preparing the recipe.
 
         Returns:
@@ -155,11 +176,13 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
             slug = mealie.create_recipe(name)
             recipe_json = mealie.get_recipe(slug)
             recipe = Recipe.model_validate(recipe_json)
-            recipe.recipeIngredient = [RecipeIngredient(note=i) for i in ingredients]
+            recipe.recipeIngredient = build_recipe_ingredients(mealie, ingredients)
             recipe.recipeInstructions = [
                 RecipeInstruction(text=i) for i in instructions
             ]
             return mealie.update_recipe(slug, recipe.model_dump(exclude_none=True))
+        except ToolError:
+            raise
         except Exception as e:
             error_msg = f"Error creating recipe '{name}': {str(e)}"
             logger.error({"message": error_msg})
@@ -171,14 +194,34 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
     @mcp.tool()
     def update_recipe(
         slug: str,
-        ingredients: List[str],
+        ingredients: List[Any],
         instructions: List[str],
     ) -> Dict[str, Any]:
         """Replaces the ingredients and instructions of an existing recipe.
 
+        Ingredients accept two forms (mix freely within the same list):
+
+        1. Plain string (legacy, free-form): `"1 lb ground pork"` — stored
+           verbatim in `note`. Use this for vague items like
+           `"salt to taste"` that don't fit a structured schema.
+
+        2. Structured dict for items the recipe scaler should multiply:
+
+               {"quantity": 1.0, "unit": "lb", "food": "ground pork"}
+               {"quantity": 25, "unit": "g", "food": "seasoning mix",
+                "note": "or to taste"}
+
+           `unit` and `food` accept either a name (matched
+           case-insensitively against existing names, plural names,
+           abbreviations, and aliases) or an existing UUID. Names that do
+           not match any existing record cause this call to fail with a
+           list of unknowns. Use `create_food` / `create_unit` to add them
+           first, then retry — this is intentional to prevent silent
+           duplication of the food/unit vocabulary.
+
         Args:
             slug: The unique text identifier for the recipe to be updated.
-            ingredients: A list of ingredients for the recipe include quantities and units.
+            ingredients: List of strings and/or structured ingredient dicts.
             instructions: A list of instructions for preparing the recipe.
 
         Returns:
@@ -188,11 +231,13 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
             logger.info({"message": "Updating recipe", "slug": slug})
             recipe_json = mealie.get_recipe(slug)
             recipe = Recipe.model_validate(recipe_json)
-            recipe.recipeIngredient = [RecipeIngredient(note=i) for i in ingredients]
+            recipe.recipeIngredient = build_recipe_ingredients(mealie, ingredients)
             recipe.recipeInstructions = [
                 RecipeInstruction(text=i) for i in instructions
             ]
             return mealie.update_recipe(slug, recipe.model_dump(exclude_none=True))
+        except ToolError:
+            raise
         except Exception as e:
             error_msg = f"Error updating recipe '{slug}': {str(e)}"
             logger.error({"message": error_msg})

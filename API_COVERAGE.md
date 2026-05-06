@@ -11,8 +11,10 @@ This document compares the MCP server implementation against the official Mealie
 | Categories | 7 | 7 | 100% ✅ |
 | Tags | 7 | 7 | 100% ✅ |
 | Equipment (Tools) | 7 | 2 | 29% |
+| Foods | 5 | 5 | 100% ✅ |
+| Units | 5 | 5 | 100% ✅ |
 | Meal Plans | 7 | 4 | 57% |
-| **Total Priority APIs** | **65** | **47** | **72%** |
+| **Total Priority APIs** | **75** | **57** | **76%** |
 
 > Note: Recipe tag/category/equipment assignment is exposed via three additional
 > MCP tools (`set_recipe_tags`, `set_recipe_categories`, `set_recipe_equipment`)
@@ -106,6 +108,29 @@ avoid overloading the MCP "tool" terminology.
 - ⏳ `PUT /api/organizers/tools/{id}` - Update
 - ⏳ `DELETE /api/organizers/tools/{id}` - Delete
 
+### ✅ Foods (5/5 implemented - 100%)
+
+Foods are the named ingredients (e.g. "ground pork", "onion") referenced
+from recipe ingredients and shopping list items by UUID. Required for
+recipes to be scalable in the Mealie UI.
+
+- ✅ `GET /api/foods` - List all
+- ✅ `POST /api/foods` - Create
+- ✅ `GET /api/foods/{id}` - Get by ID
+- ✅ `PUT /api/foods/{id}` - Update
+- ✅ `DELETE /api/foods/{id}` - Delete
+
+### ✅ Units (5/5 implemented - 100%)
+
+Units are the measurement units (e.g. "g", "tbsp") attached to recipe
+ingredients. Required for recipes to be scalable in the Mealie UI.
+
+- ✅ `GET /api/units` - List all
+- ✅ `POST /api/units` - Create
+- ✅ `GET /api/units/{id}` - Get by ID
+- ✅ `PUT /api/units/{id}` - Update
+- ✅ `DELETE /api/units/{id}` - Delete
+
 ### 🔶 Meal Plans (4/7 implemented)
 
 **Implemented:**
@@ -137,8 +162,6 @@ The following API areas are available but not yet implemented:
 - Recipe actions (`/api/households/recipe-actions/*`)
 
 ### Organizer Features
-- Foods (`/api/organizers/foods/*`)
-- Units (`/api/organizers/units/*`)
 - Labels (`/api/organizers/labels/*`)
 
 ### Admin & User Management
