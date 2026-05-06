@@ -208,6 +208,8 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
         description: Optional[str] = None,
         recipe_yield: Optional[str] = None,
         total_time: Optional[str] = None,
+        prep_time: Optional[str] = None,
+        cook_time: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Partially update a recipe (only updates provided fields).
 
@@ -217,6 +219,8 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
             description: New description for the recipe (optional)
             recipe_yield: New yield/servings for the recipe (optional)
             total_time: New total time for the recipe (optional)
+            prep_time: New prep time for the recipe (optional)
+            cook_time: New cook time for the recipe (optional)
 
         Returns:
             Dict[str, Any]: The updated recipe details.
@@ -233,6 +237,10 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
                 recipe_data["recipeYield"] = recipe_yield
             if total_time is not None:
                 recipe_data["totalTime"] = total_time
+            if prep_time is not None:
+                recipe_data["prepTime"] = prep_time
+            if cook_time is not None:
+                recipe_data["cookTime"] = cook_time
 
             if not recipe_data:
                 raise ValueError("At least one field must be provided to update")
