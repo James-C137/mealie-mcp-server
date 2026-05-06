@@ -17,6 +17,12 @@ class RecipeOrganizer(BaseModel):
 
 
 class IngredientUnit(BaseModel):
+    """Mirrors Mealie's `IngredientUnit` schema with `extra='allow'` so that
+    fields the API adds in future releases round-trip through `model_dump`
+    instead of being silently stripped."""
+
+    model_config = ConfigDict(extra="allow")
+
     id: Optional[str] = None
     name: str
     pluralName: Optional[str] = None
@@ -32,6 +38,12 @@ class IngredientUnit(BaseModel):
 
 
 class IngredientFood(BaseModel):
+    """Mirrors Mealie's `IngredientFood` schema with `extra='allow'` so that
+    fields the API adds in future releases round-trip through `model_dump`
+    instead of being silently stripped."""
+
+    model_config = ConfigDict(extra="allow")
+
     id: Optional[str] = None
     name: str
     pluralName: Optional[str] = None

@@ -6,6 +6,45 @@ All notable changes to the Mealie MCP Server.
 
 ### ✨ New Features
 
+#### Structured Recipe Ingredients
+
+`create_recipe` and `update_recipe` now accept structured ingredient
+dicts in addition to plain strings. Structured ingredients populate
+`quantity`, `unit`, and `food` so recipes are scalable in the Mealie UI:
+
+```python
+update_recipe(
+    slug,
+    ingredients=[
+        "salt to taste",  # legacy string form still works
+        {"quantity": 1.0, "unit": "lb", "food": "ground pork"},
+        {"quantity": 25, "unit": "g", "food": "seasoning mix",
+         "note": "or to taste"},
+    ],
+    instructions=[...],
+)
+```
+
+`unit` and `food` accept either a name (matched case-insensitively
+against names, plural names, abbreviations, and aliases) or a UUID.
+Unknown names raise a single `ToolError` listing every unresolved food
+and unit, so the caller can resolve them in a follow-up rather than
+silently creating duplicates or dropping to note-only ingredients.
+
+#### Foods CRUD (5 new operations)
+- `get_foods` - List/search ingredient foods with pagination
+- `get_food` - Look up a food by UUID
+- `create_food` - Create a new food (with optional plural name and label)
+- `update_food` - Update a food's fields (fetch-merge-update preserves unspecified fields)
+- `delete_food` - Delete a food
+
+#### Units CRUD (5 new operations)
+- `get_units` - List/search ingredient units with pagination
+- `get_unit` - Look up a unit by UUID
+- `create_unit` - Create a new unit (with optional abbreviation, plural forms, fraction display)
+- `update_unit` - Update a unit's fields (fetch-merge-update preserves unspecified fields)
+- `delete_unit` - Delete a unit
+
 #### Recipe Tag/Category/Equipment Assignment (3 new operations)
 - `set_recipe_tags` - Replace a recipe's tags with a list of tag slugs
 - `set_recipe_categories` - Replace a recipe's categories with a list of category slugs
@@ -14,6 +53,12 @@ All notable changes to the Mealie MCP Server.
 #### Equipment Discovery (2 new operations)
 - `get_equipment` - List/search equipment items (Mealie's `/api/organizers/tools`, exposed as "equipment")
 - `get_equipment_by_slug` - Look up equipment by slug
+
+### 🔄 Backwards Compatibility
+
+The `ingredients` argument to `create_recipe` / `update_recipe` is now
+typed as `List[Any]` to accept both string and dict items. Existing calls
+that pass plain strings continue to work unchanged.
 
 ## [Unreleased] - 2025-01-05
 
