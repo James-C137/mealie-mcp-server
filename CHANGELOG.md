@@ -45,6 +45,13 @@ silently creating duplicates or dropping to note-only ingredients.
 - `update_unit` - Update a unit's fields (fetch-merge-update preserves unspecified fields)
 - `delete_unit` - Delete a unit
 
+#### Recipe Servings Scaling Base
+`patch_recipe` now accepts `recipe_servings` (numeric float), the base
+count Mealie's UI +/- buttons multiply against. Distinct from
+`recipe_yield` (free-form descriptor like "4 cookies") — set both so the
+display reads naturally and ingredient scaling works from a meaningful
+base.
+
 #### Recipe Tag/Category/Equipment Assignment (3 new operations)
 - `set_recipe_tags` - Replace a recipe's tags with a list of tag slugs
 - `set_recipe_categories` - Replace a recipe's categories with a list of category slugs

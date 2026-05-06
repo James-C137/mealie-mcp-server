@@ -252,6 +252,7 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
         name: Optional[str] = None,
         description: Optional[str] = None,
         recipe_yield: Optional[str] = None,
+        recipe_servings: Optional[float] = None,
         total_time: Optional[str] = None,
         prep_time: Optional[str] = None,
         cook_time: Optional[str] = None,
@@ -262,7 +263,8 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
             slug: The unique text identifier for the recipe to be updated.
             name: New name for the recipe (optional)
             description: New description for the recipe (optional)
-            recipe_yield: New yield/servings for the recipe (optional)
+            recipe_yield: New yield/servings descriptor for the recipe, e.g. "4 cookies" (optional)
+            recipe_servings: Numeric base servings count used by the UI scaling controls (optional)
             total_time: New total time for the recipe (optional)
             prep_time: New prep time for the recipe (optional)
             cook_time: New cook time for the recipe (optional)
@@ -280,6 +282,8 @@ def register_recipe_tools(mcp: FastMCP, mealie: MealieFetcher) -> None:
                 recipe_data["description"] = description
             if recipe_yield is not None:
                 recipe_data["recipeYield"] = recipe_yield
+            if recipe_servings is not None:
+                recipe_data["recipeServings"] = recipe_servings
             if total_time is not None:
                 recipe_data["totalTime"] = total_time
             if prep_time is not None:
